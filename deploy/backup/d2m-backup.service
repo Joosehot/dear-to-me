@@ -1,0 +1,12 @@
+# The daily backup of Dear to Me (started by d2m-backup.timer). Installed as README step 10 says:
+#   sudo cp /opt/d2m/deploy/backup/d2m-backup.service /opt/d2m/deploy/backup/d2m-backup.timer /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now d2m-backup.timer
+# The code is expected in /opt/d2m; change ExecStart if it is elsewhere.
+[Unit]
+Description=Dear to Me: back up the database (and copy it to R2)
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /opt/d2m/deploy/backup/d2m-backup.sh

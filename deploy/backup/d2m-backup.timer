@@ -1,0 +1,11 @@
+# Every night at 03:30 (server time), and at the next boot if the server was off then.
+[Unit]
+Description=Dear to Me: daily backup
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+RandomizedDelaySec=10m
+Persistent=true
+
+[Install]
+WantedBy=timers.target

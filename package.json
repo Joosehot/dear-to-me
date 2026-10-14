@@ -1,0 +1,45 @@
+{
+  "name": "d2m",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Dear to Me: long-form posts for your friends, and a live conversation under every post.",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n server,web -c magenta,cyan \"tsx watch --disable-warning=ExperimentalWarning server/dev.ts\" \"vite\"",
+    "build": "tsc && vite build",
+    "start": "tsx --disable-warning=ExperimentalWarning server/index.ts",
+    "typecheck": "tsc",
+    "mock": "vite --mode mock --port 5175",
+    "check": "node --disable-warning=ExperimentalWarning scripts/check.mjs",
+    "e2e": "node scripts/e2e.mjs",
+    "backup": "node --disable-warning=ExperimentalWarning scripts/backup.mjs",
+    "backup:r2": "tsx scripts/backup-r2.ts",
+    "r2": "tsx scripts/r2.ts",
+    "stripe": "tsx scripts/stripe.ts",
+    "r2:cors": "tsx scripts/r2-cors.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1151.0",
+    "@aws-sdk/s3-request-presigner": "^3.1151.0",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "stripe": "^23.0.0",
+    "tsx": "^4.19.2",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/ws": "^8.5.13",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "playwright-core": "^1.64.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3"
+  }
+}

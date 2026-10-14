@@ -1,0 +1,14 @@
+# never into the image: dependencies (installed inside), data, the build, secrets, git, test output
+node_modules
+data
+dist
+.env
+.env.*
+.git
+*.log
+test-results
+playwright-report
+tools/__pycache__
+deploy/.env
+deploy/*.env
+!deploy/.env.example

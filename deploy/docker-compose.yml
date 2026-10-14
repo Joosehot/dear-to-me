@@ -1,0 +1,61 @@
+# Dear to Me on one server: the app, and Caddy in front of it (HTTPS certificates by itself, HTTP
+# redirected to HTTPS, compression, websockets). Run from this folder, with .env beside it:
+#
+#   docker compose up -d --build
+#
+# The data lives in the d2m-data volume (/data in the app); Caddy's certificates in caddy-data.
+
+name: d2m
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: d2m:latest
+    restart: unless-stopped
+    # a tiny init as PID 1: signals passed on, FFmpeg's finished children reaped
+    init: true
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      D2M_DATA: /data
+      PORT: "5174"
+      D2M_ORIGIN: https://${D2M_DOMAIN:?set D2M_DOMAIN in deploy/.env}
+      # Caddy is the one proxy in front (2 with Cloudflare's proxy on as well: see README)
+      D2M_TRUST_PROXY: ${D2M_TRUST_PROXY:-1}
+    volumes:
+      - d2m-data:/data
+    # reached only through Caddy, never straight from the internet
+    expose:
+      - "5174"
+    stop_grace_period: 15s
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "5" }
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      D2M_DOMAIN: ${D2M_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in deploy/.env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "5" }
+
+volumes:
+  d2m-data:
+  caddy-data:
+  caddy-config:
